@@ -1,0 +1,4 @@
+{
+    "xmake.compileCommandsDirectory": "${workspaceRoot}/build",
+    "editor.formatOnSave": true,
+}
