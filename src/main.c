@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 static maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                              {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
+                              {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                               {0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0},
                               {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
                               {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
@@ -13,7 +13,7 @@ static maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                               {0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0},
                               {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0},
                               {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0},
-                              {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0},
                               {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0},
                               {0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0},
                               {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
@@ -27,15 +27,19 @@ static maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                       .start = {1, 1},
                       .end = {18, 18}};
 
+static Renderer_t renderer = {0};
+
 static void step_callback(const maze_t *restrict maze, const Point_t *restrict current) {
-    render_maze(maze);
-    render_current_point(*current);
-    refresh();
+    Renderer_render_maze(&renderer, maze);
+    Renderer_render_current_point(&renderer, *current);
+    Renderer_commit_all(&renderer);
     getch();
 }
 
 int main(void) {
-    init_renderer();
+    if (Renderer_init(&renderer)) {
+        return 1;
+    }
 
     int result = find_path(&maze, step_callback);
     if (result != 0) {
@@ -43,6 +47,6 @@ int main(void) {
     }
     getch();
 
-    destroy_renderer();
+    Renderer_destroy(&renderer);
     return 0;
 }

@@ -33,28 +33,28 @@ int find_path(const maze_t *restrict maze, const step_callback_t step_callback) 
         Point_t next;
         next.x = current->x + 1;
         next.y = current->y;
-        if (next.x < MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.x < MAZER_MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }
 
         next.x = current->x - 1;
         next.y = current->y;
-        if (next.x < MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.x < MAZER_MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }
 
         next.x = current->x;
         next.y = current->y + 1;
-        if (next.y < MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.y < MAZER_MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }
 
         next.x = current->x;
         next.y = current->y - 1;
-        if (next.y < MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.y < MAZER_MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }

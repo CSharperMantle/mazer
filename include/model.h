@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-#define MAZE_HEIGHT 20
-#define MAZE_WIDTH 20
+#define MAZER_MAZE_HEIGHT 20
+#define MAZER_MAZE_WIDTH 20
 
 typedef enum direction_ {
     LEFT,
@@ -27,9 +27,9 @@ typedef struct Point_ {
 } Point_t;
 
 typedef struct maze_ {
-    cell_type_t map[MAZE_WIDTH][MAZE_HEIGHT];
-    const Point_t start;
-    const Point_t end;
+    cell_type_t map[MAZER_MAZE_WIDTH][MAZER_MAZE_HEIGHT];
+    Point_t start;
+    Point_t end;
 } maze_t;
 
 typedef void (*step_callback_t)(const maze_t *restrict maze, const Point_t *restrict current);
