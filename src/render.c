@@ -1,5 +1,6 @@
 #include "render.h"
 
+#include "log_buffer.h"
 #include "model.h"
 #include <curses.h>
 #include <string.h>
@@ -33,11 +34,37 @@ void Window_destroy(Window_t *restrict win) {
 
 static void render_point(const Window_t *restrict win, Point_t p, char ch, cell_color_t color) {
     WINDOW *handle = win->handle;
-    Point_t actual_point = Window_pad_point(win, p);
+    p = Window_pad_point(win, p);
     wattron(handle, COLOR_PAIR(color));
-    wmove(handle, actual_point.y, actual_point.x);
-    waddch(handle, ch);
+    mvwaddch(handle, p.y, p.x, ch);
     wattroff(handle, COLOR_PAIR(color));
+}
+
+static void render_text(const Window_t *restrict win, Point_t p, const char *text,
+                        cell_color_t color, int clear_len) {
+    WINDOW *handle = win->handle;
+    p = Window_pad_point(win, p);
+    for (int i = 0; i < clear_len; i++) {
+        mvwaddch(handle, p.y, p.x + i, ' ');
+    }
+    wattron(handle, COLOR_PAIR(color));
+    mvwprintw(handle, p.y, p.x, "%s", text);
+    wattroff(handle, COLOR_PAIR(color));
+}
+
+static cell_color_t state_to_color(progress_state_t state) {
+    switch (state) {
+    case PROGRESSING:
+        return CELL_COLOR_CYAN;
+    case BACKTRACKING:
+        return CELL_COLOR_YELLOW;
+    case DONE:
+        return CELL_COLOR_GREEN;
+    case FAILED:
+        return CELL_COLOR_RED;
+    default:
+        return CELL_COLOR_WHITE;
+    }
 }
 
 int Renderer_init(Renderer_t *restrict r) {
@@ -62,6 +89,7 @@ int Renderer_init(Renderer_t *restrict r) {
     init_pair(CELL_COLOR_RED, COLOR_RED, COLOR_BLACK);
     init_pair(CELL_COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
     init_pair(CELL_COLOR_MAGNETA, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(CELL_COLOR_GREEN, COLOR_GREEN, COLOR_BLACK);
 
     refresh();
 
@@ -70,7 +98,7 @@ int Renderer_init(Renderer_t *restrict r) {
     Window_init(&r->win_log, MAZER_WINDOW_LOG_WIDTH, MAZER_MAZE_HEIGHT, MAZER_WINDOW_PAD,
                 MAZER_WINDOW_PAD, 0, r->win_game.width_real + MAZER_WINDOW_PAD);
     Window_init(&r->win_command, r->win_game.width_real + r->win_log.width_real - MAZER_WINDOW_PAD,
-                MAZER_WINDOW_COMMAND_HEIGHT, MAZER_WINDOW_PAD, MAZER_WINDOW_PAD,
+                MAZER_WINDOW_COMMAND_HEIGHT, MAZER_WINDOW_PAD, MAZER_COMMAND_PAD,
                 r->win_game.height_real + MAZER_COMMAND_VERT_GAP, 0);
 
     return 0;
@@ -105,6 +133,44 @@ void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict m
 
 void Renderer_render_current_point(const Renderer_t *restrict r, Point_t p) {
     render_point(&r->win_game, p, '@', CELL_COLOR_YELLOW);
+}
+
+void Renderer_render_log(const Renderer_t *restrict r, const LogBuffer_t *restrict buf) {
+    if (buf->full) {
+        int ln = 0;
+        for (int i = buf->tail; i < MAZER_LOGBUFFER_LEN; i++) {
+            Point_t p = {
+                .x = 0,
+                .y = ln,
+            };
+            const LogBufferNode_t *entry = buf->buffer + i;
+            render_text(&r->win_log, p, entry->msg, state_to_color(entry->state),
+                        MAZER_LOGBUFFER_ENTRY_LEN);
+            ln++;
+        }
+        for (int i = 0; i < buf->head; i++) {
+            Point_t p = {
+                .x = 0,
+                .y = ln,
+            };
+            const LogBufferNode_t *entry = buf->buffer + i;
+            render_text(&r->win_log, p, entry->msg, state_to_color(entry->state),
+                        MAZER_LOGBUFFER_ENTRY_LEN);
+            ln++;
+        }
+    } else {
+        int ln = 0;
+        for (int i = buf->tail; i < buf->head; i++) {
+            Point_t p = {
+                .x = 0,
+                .y = ln,
+            };
+            const LogBufferNode_t *entry = buf->buffer + i;
+            render_text(&r->win_log, p, entry->msg, state_to_color(entry->state),
+                        MAZER_LOGBUFFER_ENTRY_LEN);
+            ln++;
+        }
+    }
 }
 
 void Renderer_commit_all(const Renderer_t *restrict r) {

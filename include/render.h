@@ -1,6 +1,7 @@
 #ifndef RENDER_H_INCLUDED_
 #define RENDER_H_INCLUDED_
 
+#include "log_buffer.h"
 #include "model.h"
 #include <curses.h>
 
@@ -11,6 +12,7 @@
 #define MAZER_WINDOW_COMMAND_HEIGHT 2
 
 #define MAZER_WINDOW_PAD 2
+#define MAZER_COMMAND_PAD 1
 #define MAZER_COMMAND_VERT_GAP 1
 
 typedef enum cell_color_ {
@@ -19,6 +21,7 @@ typedef enum cell_color_ {
     CELL_COLOR_RED,
     CELL_COLOR_YELLOW,
     CELL_COLOR_MAGNETA,
+    CELL_COLOR_GREEN,
     CELL_COLOR_LEN_
 } cell_color_t;
 
@@ -43,6 +46,7 @@ typedef struct Renderer_ {
 int Renderer_init(Renderer_t *restrict r);
 void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict maze);
 void Renderer_render_current_point(const Renderer_t *restrict r, Point_t p);
+void Renderer_render_log(const Renderer_t *restrict r, const LogBuffer_t *restrict buf);
 void Renderer_commit_all(const Renderer_t *restrict r);
 void Renderer_destroy(Renderer_t *restrict r);
 

@@ -15,12 +15,17 @@ int find_path(const maze_t *restrict maze, const step_callback_t step_callback) 
     const Point_t end = maze_->end;
     bool solution_found = false;
 
+    progress_state_t state = PROGRESSING;
+    Point_t *current = NULL;
     Stack_push(&stack, &maze_->start);
     while (stack.len > 0) {
-        Point_t *current = (Point_t *)Stack_peek(&stack);
+        current = (Point_t *)Stack_peek(&stack);
 
         if (step_callback != NULL) {
-            step_callback(maze_, current);
+            step_callback(maze_, (StateReport_t){
+                                     .loc = *current,
+                                     .state = state,
+                                 });
         }
 
         if (current->x == end.x && current->y == end.y) {
@@ -35,6 +40,7 @@ int find_path(const maze_t *restrict maze, const step_callback_t step_callback) 
         next.y = current->y;
         if (next.x < MAZER_MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
+            state = PROGRESSING;
             continue;
         }
 
@@ -42,6 +48,7 @@ int find_path(const maze_t *restrict maze, const step_callback_t step_callback) 
         next.y = current->y;
         if (next.x < MAZER_MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
+            state = PROGRESSING;
             continue;
         }
 
@@ -49,6 +56,7 @@ int find_path(const maze_t *restrict maze, const step_callback_t step_callback) 
         next.y = current->y + 1;
         if (next.y < MAZER_MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
+            state = PROGRESSING;
             continue;
         }
 
@@ -56,11 +64,18 @@ int find_path(const maze_t *restrict maze, const step_callback_t step_callback) 
         next.y = current->y - 1;
         if (next.y < MAZER_MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
+            state = PROGRESSING;
             continue;
         }
 
         Stack_pop(&stack, NULL);
+        state = BACKTRACKING;
     }
+
+    step_callback(maze_, (StateReport_t){
+                             .loc = *current,
+                             .state = solution_found ? DONE : FAILED,
+                         });
 
     Stack_destroy(&stack);
     free(maze_);
