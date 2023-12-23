@@ -111,9 +111,9 @@ int main_loop(void) {
             break;
         }
         cursor.x = cursor.x < 0 ? 0 : cursor.x;
-        cursor.x = cursor.x >= MAZER_MAZE_WIDTH ? MAZER_MAZE_WIDTH : cursor.x;
+        cursor.x = cursor.x >= MAZER_MAZE_WIDTH ? MAZER_MAZE_WIDTH - 1 : cursor.x;
         cursor.y = cursor.y < 0 ? 0 : cursor.y;
-        cursor.y = cursor.y >= MAZER_MAZE_HEIGHT ? MAZER_MAZE_HEIGHT : cursor.y;
+        cursor.y = cursor.y >= MAZER_MAZE_HEIGHT ? MAZER_MAZE_HEIGHT - 1 : cursor.y;
         Renderer_render_maze_highlight(&renderer, &maze, cursor);
         Renderer_commit_all(&renderer);
     }
