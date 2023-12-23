@@ -64,11 +64,19 @@ int Stack_pop(Stack_t *restrict s, void *restrict out_result) {
     return 0;
 }
 
+void *Stack_peek(Stack_t *restrict s) {
+    if (s == NULL || s->len == 0) {
+        return NULL;
+    }
+
+    return s->buf + (s->len - 1) * s->elem_size;
+}
+
 size_t Stack_len(Stack_t *restrict s) {
     return s == NULL ? 0 : s->len;
 }
 
-int Stack_destruct(Stack_t *restrict s) {
+int Stack_destroy(Stack_t *restrict s) {
     free(s->buf);
     s->buf = NULL;
     s->cap = 0;

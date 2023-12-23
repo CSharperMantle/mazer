@@ -16,17 +16,20 @@ typedef enum direction_ {
 
 typedef enum cell_type_ {
     CELL_WALL,
-    CELL_PATH,
+    CELL_PATH_UNVISITED,
+    CELL_PATH_VISITED,
     CELL_TYPE_LEN_,
 } cell_type_t;
+
+typedef cell_type_t maze_t[MAZE_WIDTH][MAZE_HEIGHT];
 
 typedef struct Point_ {
     int x;
     int y;
 } Point_t;
 
-typedef struct StepState_ {
-    bool children[DIRECTION_LEN_];
-} StepState_t;
+typedef void (*step_callback_t)(const maze_t *restrict maze, const Point_t *restrict current);
+
+int find_path(const maze_t maze, Point_t start, Point_t end, const step_callback_t step_callback);
 
 #endif /* MODEL_H_INCLUDED_ */
