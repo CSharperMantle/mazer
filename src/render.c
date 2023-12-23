@@ -90,6 +90,7 @@ int Renderer_init(Renderer_t *restrict r) {
     init_pair(CELL_COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
     init_pair(CELL_COLOR_MAGNETA, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(CELL_COLOR_GREEN, COLOR_GREEN, COLOR_BLACK);
+    init_pair(CELL_COLOR_HIGHLIGHT, COLOR_BLACK, COLOR_WHITE);
 
     refresh();
 
@@ -105,8 +106,8 @@ int Renderer_init(Renderer_t *restrict r) {
 }
 
 void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict maze) {
-    for (size_t x = 0; x < MAZER_MAZE_WIDTH; x++) {
-        for (size_t y = 0; y < MAZER_MAZE_HEIGHT; y++) {
+    for (int x = 0; x < MAZER_MAZE_WIDTH; x++) {
+        for (int y = 0; y < MAZER_MAZE_HEIGHT; y++) {
             const Point_t p = {
                 .x = x,
                 .y = y,
@@ -123,6 +124,39 @@ void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict m
                 break;
             default:
                 render_point(&r->win_game, p, '?', CELL_COLOR_WHITE);
+                break;
+            }
+        }
+    }
+    render_point(&r->win_game, maze->start, 'S', CELL_COLOR_MAGNETA);
+    render_point(&r->win_game, maze->end, 'E', CELL_COLOR_MAGNETA);
+}
+
+void Renderer_render_maze_highlight(const Renderer_t *restrict r, const maze_t *restrict maze,
+                                    Point_t highlight) {
+    for (int x = 0; x < MAZER_MAZE_WIDTH; x++) {
+        for (int y = 0; y < MAZER_MAZE_HEIGHT; y++) {
+            bool is_highlight = x == highlight.x && y == highlight.y;
+            const Point_t p = {
+                .x = x,
+                .y = y,
+            };
+            switch (maze->map[x][y]) {
+            case CELL_WALL:
+                render_point(&r->win_game, p, '#',
+                             is_highlight ? CELL_COLOR_HIGHLIGHT : CELL_COLOR_WHITE);
+                break;
+            case CELL_PATH_UNVISITED:
+                render_point(&r->win_game, p, ' ',
+                             is_highlight ? CELL_COLOR_HIGHLIGHT : CELL_COLOR_WHITE);
+                break;
+            case CELL_PATH_VISITED:
+                render_point(&r->win_game, p, '.',
+                             is_highlight ? CELL_COLOR_HIGHLIGHT : CELL_COLOR_CYAN);
+                break;
+            default:
+                render_point(&r->win_game, p, '?',
+                             is_highlight ? CELL_COLOR_HIGHLIGHT : CELL_COLOR_WHITE);
                 break;
             }
         }
@@ -171,6 +205,27 @@ void Renderer_render_log(const Renderer_t *restrict r, const LogBuffer_t *restri
             ln++;
         }
     }
+}
+
+void Renderer_render_command(const Renderer_t *restrict r, const char *restrict buf,
+                             cell_color_t color) {
+    WINDOW *handle = r->win_command.handle;
+    int width_content = r->win_command.width_real - 2 * r->win_command.padding_lr;
+    for (int i = 0; i < width_content; i++) {
+        Point_t p = Window_pad_point(&r->win_command, (Point_t){
+                                                          .x = i,
+                                                          .y = 0,
+                                                      });
+        mvwaddch(handle, p.y, p.x, ' ');
+    }
+
+    Point_t p = Window_pad_point(&r->win_command, (Point_t){
+                                                      .x = 0,
+                                                      .y = 0,
+                                                  });
+    wattron(handle, COLOR_PAIR(color));
+    mvwprintw(handle, p.y, p.x, "%s", buf);
+    wattroff(handle, COLOR_PAIR(color));
 }
 
 void Renderer_commit_all(const Renderer_t *restrict r) {

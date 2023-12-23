@@ -5,6 +5,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#define MAZER_COMMAND_MAX_LEN 40
 
 static maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                               {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0},
@@ -59,19 +62,73 @@ static void step_callback(const maze_t *restrict maze, StateReport_t state) {
     Renderer_render_current_point(&renderer, state.loc);
     Renderer_render_log(&renderer, &logger);
     Renderer_commit_all(&renderer);
-    getch();
 
     free(msg);
+
+    getch();
 }
 
-int main(void) {
+int main_loop(void) {
     if (Renderer_init(&renderer)) {
         return 1;
     }
     LogBuffer_init(&logger);
+    Renderer_render_maze(&renderer, &maze);
+    Renderer_render_command(&renderer, "EDIT: q=run; hjkl=move; Spc=cycle; se=terms",
+                            CELL_COLOR_WHITE);
+    Renderer_commit_all(&renderer);
 
+    Point_t cursor = {0};
+    while (true) {
+        int ch = getch();
+        if (ch == 'q' || ch == 'Q') {
+            break;
+        }
+        switch (ch) {
+        case 'h':
+            cursor.x--;
+            break;
+        case 'j':
+            cursor.y++;
+            break;
+        case 'k':
+            cursor.y--;
+            break;
+        case 'l':
+            cursor.x++;
+            break;
+        case ' ':
+            maze.map[cursor.x][cursor.y] =
+                maze.map[cursor.x][cursor.y] == CELL_WALL ? CELL_PATH_UNVISITED : CELL_WALL;
+            break;
+        case 's':
+            maze.start = cursor;
+            break;
+        case 'e':
+            maze.end = cursor;
+            break;
+        default:
+            break;
+        }
+        cursor.x = cursor.x < 0 ? 0 : cursor.x;
+        cursor.x = cursor.x >= MAZER_MAZE_WIDTH ? MAZER_MAZE_WIDTH : cursor.x;
+        cursor.y = cursor.y < 0 ? 0 : cursor.y;
+        cursor.y = cursor.y >= MAZER_MAZE_HEIGHT ? MAZER_MAZE_HEIGHT : cursor.y;
+        Renderer_render_maze_highlight(&renderer, &maze, cursor);
+        Renderer_commit_all(&renderer);
+    }
+
+    Renderer_render_command(&renderer, "RUN: Ctrl-C - quit, others - step", CELL_COLOR_WHITE);
+    Renderer_commit_all(&renderer);
     find_path(&maze, step_callback);
 
     Renderer_destroy(&renderer);
+
+    return 0;
+}
+
+int main(void) {
+    while (!main_loop())
+        ;
     return 0;
 }
