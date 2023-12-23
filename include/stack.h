@@ -14,10 +14,10 @@ typedef struct Stack_ {
 } Stack_t;
 
 int Stack_init(Stack_t *restrict s, size_t elem_size);
-int Stack_push(Stack_t *restrict s, void *restrict elem);
+int Stack_push(Stack_t *restrict s, const void *restrict elem);
 int Stack_pop(Stack_t *restrict s, void *restrict out_result);
-void *Stack_peek(Stack_t *restrict s);
-size_t Stack_len(Stack_t *restrict s);
+void *Stack_peek(const Stack_t *restrict s);
+size_t Stack_len(const Stack_t *restrict s);
 int Stack_destroy(Stack_t *restrict s);
 
 #endif /* STACK_H_INCLUDED_ */

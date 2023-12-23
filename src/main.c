@@ -4,30 +4,31 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-static maze_t maze = {
-    {CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL,
-     CELL_WALL, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED,
-     CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_WALL, CELL_WALL, CELL_PATH_UNVISITED,
-     CELL_WALL, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED,
-     CELL_WALL, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED,
-     CELL_WALL, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED,
-     CELL_WALL, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED,
-     CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL, CELL_WALL,
-     CELL_WALL, CELL_WALL, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED,
-     CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_PATH_UNVISITED, CELL_WALL},
-    {CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL, CELL_WALL,
-     CELL_WALL, CELL_WALL}};
+static maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                              {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
+                              {0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0},
+                              {0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0},
+                              {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0},
+                              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0},
+                              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                      .start = {1, 1},
+                      .end = {18, 18}};
 
 static void step_callback(const maze_t *restrict maze, const Point_t *restrict current) {
-    render_maze(*maze);
+    render_maze(maze);
     render_current_point(*current);
     refresh();
     getch();
@@ -36,10 +37,9 @@ static void step_callback(const maze_t *restrict maze, const Point_t *restrict c
 int main(void) {
     init_renderer();
 
-    int result = find_path(maze, (Point_t){1, 1}, (Point_t){8, 8}, step_callback);
+    int result = find_path(&maze, step_callback);
     if (result != 0) {
         fprintf(stderr, "Error: find_path() returned %d\n", result);
-        return 1;
     }
     getch();
 

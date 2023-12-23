@@ -39,7 +39,7 @@ int Stack_init(Stack_t *restrict s, size_t elem_size) {
     return 0;
 }
 
-int Stack_push(Stack_t *restrict s, void *restrict elem) {
+int Stack_push(Stack_t *restrict s, const void *restrict elem) {
     if (s == NULL || elem == NULL) {
         return 1;
     }
@@ -64,7 +64,7 @@ int Stack_pop(Stack_t *restrict s, void *restrict out_result) {
     return 0;
 }
 
-void *Stack_peek(Stack_t *restrict s) {
+void *Stack_peek(const Stack_t *restrict s) {
     if (s == NULL || s->len == 0) {
         return NULL;
     }
@@ -72,7 +72,7 @@ void *Stack_peek(Stack_t *restrict s) {
     return s->buf + (s->len - 1) * s->elem_size;
 }
 
-size_t Stack_len(Stack_t *restrict s) {
+size_t Stack_len(const Stack_t *restrict s) {
     return s == NULL ? 0 : s->len;
 }
 

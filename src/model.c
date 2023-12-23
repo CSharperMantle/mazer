@@ -5,17 +5,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-int find_path(const maze_t maze, Point_t start, Point_t end, const step_callback_t step_callback) {
+int find_path(const maze_t *restrict maze, const step_callback_t step_callback) {
     Stack_t stack;
     Stack_init(&stack, sizeof(Point_t));
 
     maze_t *maze_ = (maze_t *)malloc(sizeof(maze_t));
     memcpy(maze_, maze, sizeof(maze_t));
 
+    const Point_t end = maze_->end;
     bool solution_found = false;
 
-    Stack_push(&stack, &start);
-
+    Stack_push(&stack, &maze_->start);
     while (stack.len > 0) {
         Point_t *current = (Point_t *)Stack_peek(&stack);
 
@@ -28,33 +28,33 @@ int find_path(const maze_t maze, Point_t start, Point_t end, const step_callback
             break;
         }
 
-        (*maze_)[current->x][current->y] = CELL_PATH_VISITED;
+        maze_->map[current->x][current->y] = CELL_PATH_VISITED;
 
         Point_t next;
         next.x = current->x + 1;
         next.y = current->y;
-        if (next.x < MAZE_WIDTH && (*maze_)[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.x < MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }
 
         next.x = current->x - 1;
         next.y = current->y;
-        if (next.x < MAZE_WIDTH && (*maze_)[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.x < MAZE_WIDTH && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }
 
         next.x = current->x;
         next.y = current->y + 1;
-        if (next.y < MAZE_HEIGHT && (*maze_)[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.y < MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }
 
         next.x = current->x;
         next.y = current->y - 1;
-        if (next.y < MAZE_HEIGHT && (*maze_)[next.x][next.y] == CELL_PATH_UNVISITED) {
+        if (next.y < MAZE_HEIGHT && maze_->map[next.x][next.y] == CELL_PATH_UNVISITED) {
             Stack_push(&stack, &next);
             continue;
         }
