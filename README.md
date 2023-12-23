@@ -22,7 +22,7 @@ On entering game, you will be prompted to make edits to an preloaded maze map. T
 * `Space`: Switch cell under cursor between "wall" and "path" (not wall)
 * `s`, `e`: Move starting/ending point (terminals, *terms*) to cursor
 
-Here is a example screen under EDIT mode:
+Here is a example screen under EDIT mode: (legends: `#`: wall; `S`: starting point; `E`: ending point)
 
 ```text
 ┌──────────────────────┐  ┌──────────────────────┐
@@ -57,7 +57,9 @@ Here is a example screen under EDIT mode:
 
 After finishing your edits, press `q` as described above to enter "*RUN mode*". In RUN mode, any key press will advance the searching step by 1.
 
-Here is a screenshot of RUN mode:
+Here is a example screen under EDIT mode: 
+
+Here is a screenshot of RUN mode: (legends: `#`: wall; `@`: current location; `.`: visited path; `S`: starting point; `E`: ending point)
 
 ```text
 ┌──────────────────────┐  ┌──────────────────────┐
