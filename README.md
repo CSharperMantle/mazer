@@ -15,6 +15,8 @@ xmake
 xmake run
 ```
 
+> See https://github.com/CSharperMantle/mazer_win if you need a Windows fork.
+
 On entering game, you will be prompted to make edits to an preloaded maze map. This mode is named "*EDIT mode*". The following controls are available:
 
 * `q`: Quit "EDIT mode"
