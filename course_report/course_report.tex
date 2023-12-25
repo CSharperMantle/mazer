@@ -232,13 +232,15 @@
 
 \section{实验设计}
 
+本实验的源代码获取方式见附录 \ref{appendix_source_code}.
+
 \subsection{迭代快速排序}
 
 由于在专题任务 1 中, 我们对快速排序算法的实现已经采用了迭代法, 故不再重复具体过程. 相关实现代码见附录和专题任务 1.
 
 \subsection{回溯法迷宫探索}
 
-我们使用 C 语言为回溯法迷宫探索算法实现了一个简单的终端 ASCII-art 图形交互界面. 该程序有基于 \texttt{ncurses} \cite{bib_ncurses} 的 Unix\textsuperscript{\textregistered} 分支和基于 \texttt{PDCurses} \cite{bib_pdcurses} 的 Windows\textsuperscript{\textregistered} 分支. 实现了跨平台的终端图形界面. 该程序的源代码见附录 \ref{appendix_source_code}. 给定迷宫大小后, 用户可以使用键盘对迷宫结构进行编辑, 并在编辑完成后以每步为单位观察探索过程.
+我们使用 C 语言为回溯法迷宫探索算法实现了一个简单的终端 ASCII-art 图形交互界面. 该程序包含基于 \texttt{ncurses} \cite{bib_ncurses} 的 Unix\textsuperscript{\textregistered} 分支和基于 \texttt{PDCurses} \cite{bib_pdcurses} 的 Windows\textsuperscript{\textregistered} 分支. 实现了跨平台的终端图形界面. 给定迷宫大小后, 用户可以使用键盘对迷宫结构进行编辑, 并在编辑完成后以每步为单位观察探索过程.
 
 \section{结果分析}
 
@@ -259,7 +261,7 @@
 
 \section{小结}
 
-本文实现了迭代快速排序和回溯法迷宫探索两种算法, 并以可交互的形式对后者结果进行展示.  实验中, 作者对递归与试探回溯的原理有了更深刻的理解, 对如何稳定地通过控制台进行图形交互也有了更深入的认识.
+本文实现了迭代快速排序和回溯法迷宫探索两种算法, 并以可交互的形式对后者结果进行展示.  实验中, 作者对递归与试探回溯的原理有了更深刻的理解, 对如何便捷地通过控制台与用户进行图形化交互也有了更深入的了解.
 
 \begin{thebibliography}{}
 
@@ -344,6 +346,10 @@ algo_errno_t quicksort_highpivot(void *arr, size_t count, size_t size, comp_t co
 \section{附录: 源代码可见性}
 \label{appendix_source_code}
 
-本报告中, 迷宫探索程序的 C 语言源代码可于 \url{https://github.com/CSharperMantle/mazer} 和 \url{https://github.com/CSharperMantle/mazer_win} 处获得. 迭代快速排序的 C 语言源代码可于 \url{https://github.com/CSharperMantle/sort_algo_perf} 处获得. 上述代码均可在 BSD 3-Clause 许可证的条件与条款下使用. 关于授权协议的具体信息, 详见上述 URL.
+迷宫探索程序的 C 语言源代码可于 \url{https://github.com/CSharperMantle/mazer} 和 \url{https://github.com/CSharperMantle/mazer_win} 处获得, 其中 \texttt{mazer\_win} 分支提供了预编译的可执行文件和调试符号, 但其并不随 \texttt{mazer} 更新. 欲了解如构建方法、 操作指引一类信息, 请阅读各仓库内的自述文件.
+
+迭代快速排序的 C 语言源代码可于 \url{https://github.com/CSharperMantle/sort_algo_perf} 处获得.
+
+上述代码均可在 BSD 3-Clause 许可证的条件与条款下使用. 关于授权协议的具体信息, 详见上述 URL.
 
 \end{document}
