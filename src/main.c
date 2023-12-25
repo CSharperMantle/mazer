@@ -46,10 +46,10 @@ static void step_callback(const maze_t *restrict maze, StateReport_t state) {
         fmt = "BTRACK (%d,%d)";
         break;
     case DONE:
-        fmt = "DONE. EXITING";
+        fmt = "DONE";
         break;
     case FAILED:
-        fmt = "FAILED. EXITING";
+        fmt = "FAILED";
         break;
     default:
         fmt = "UNK (%d,%d)";
@@ -61,7 +61,6 @@ static void step_callback(const maze_t *restrict maze, StateReport_t state) {
     LogBuffer_insert(&logger, msg, state.state);
     Renderer_render_current_point(&renderer, state.loc);
     Renderer_render_log(&renderer, &logger);
-    Renderer_commit_all(&renderer);
 
     free(msg);
 
@@ -69,14 +68,13 @@ static void step_callback(const maze_t *restrict maze, StateReport_t state) {
 }
 
 int main_loop(void) {
-    if (Renderer_init(&renderer)) {
-        return 1;
-    }
     LogBuffer_init(&logger);
+    Renderer_clear_log(&renderer);
+    Renderer_commit_all(&renderer);
+
     Renderer_render_maze(&renderer, &maze);
     Renderer_render_command(&renderer, "EDIT: q=run; hjkl=move; Spc=cycle; se=terms",
                             CELL_COLOR_WHITE);
-    Renderer_commit_all(&renderer);
 
     Point_t cursor = {0};
     while (true) {
@@ -115,20 +113,21 @@ int main_loop(void) {
         cursor.y = cursor.y < 0 ? 0 : cursor.y;
         cursor.y = cursor.y >= MAZER_MAZE_HEIGHT ? MAZER_MAZE_HEIGHT - 1 : cursor.y;
         Renderer_render_maze_highlight(&renderer, &maze, cursor);
-        Renderer_commit_all(&renderer);
     }
 
     Renderer_render_command(&renderer, "RUN: Ctrl-C - quit, others - step", CELL_COLOR_WHITE);
-    Renderer_commit_all(&renderer);
     find_path(&maze, step_callback);
-
-    Renderer_destroy(&renderer);
 
     return 0;
 }
 
 int main(void) {
-    while (!main_loop())
+    if (Renderer_init(&renderer)) {
+        return 1;
+    }
+    while (!main_loop()) {
         ;
+    }
+    Renderer_destroy(&renderer);
     return 0;
 }

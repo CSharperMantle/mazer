@@ -35,6 +35,7 @@ typedef struct Window_ {
 } Window_t;
 
 void Window_init(Window_t *restrict win, int w, int h, int p_lr, int p_tb, int y, int x);
+void Window_commit(const Window_t *restrict win);
 Point_t Window_pad_point(const Window_t *restrict win, Point_t p);
 void Window_destroy(Window_t *restrict win);
 
@@ -49,6 +50,7 @@ void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict m
 void Renderer_render_maze_highlight(const Renderer_t *restrict r, const maze_t *restrict maze,
                                     Point_t highlight);
 void Renderer_render_current_point(const Renderer_t *restrict r, Point_t p);
+void Renderer_clear_log(const Renderer_t *restrict r);
 void Renderer_render_log(const Renderer_t *restrict r, const LogBuffer_t *restrict buf);
 void Renderer_render_command(const Renderer_t *restrict r, const char *restrict buf,
                              cell_color_t color);

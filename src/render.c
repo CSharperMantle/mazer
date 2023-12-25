@@ -13,7 +13,7 @@ void Window_init(Window_t *restrict win, int w, int h, int p_lr, int p_tb, int y
     int h_real = h + p_tb * 2;
     WINDOW *handle = newwin(h_real, w_real, y, x);
     box(handle, 0, 0);
-    wrefresh(handle);
+    Window_commit(win);
     win->handle = handle;
     win->width_real = w_real;
     win->height_real = h_real;
@@ -24,10 +24,15 @@ Point_t Window_pad_point(const Window_t *restrict win, Point_t p) {
     return result;
 }
 
+void Window_commit(const Window_t *restrict win) {
+    wmove(win->handle, 0, 0);
+    wrefresh(win->handle);
+}
+
 void Window_destroy(Window_t *restrict win) {
     WINDOW *handle = win->handle;
     wborder(handle, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
-    wrefresh(handle);
+    Window_commit(win);
     delwin(handle);
     memset(win, 0, sizeof(Window_t));
 }
@@ -130,6 +135,7 @@ void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict m
     }
     render_point(&r->win_game, maze->start, 'S', CELL_COLOR_MAGNETA);
     render_point(&r->win_game, maze->end, 'E', CELL_COLOR_MAGNETA);
+    Window_commit(&r->win_game);
 }
 
 void Renderer_render_maze_highlight(const Renderer_t *restrict r, const maze_t *restrict maze,
@@ -163,10 +169,22 @@ void Renderer_render_maze_highlight(const Renderer_t *restrict r, const maze_t *
     }
     render_point(&r->win_game, maze->start, 'S', CELL_COLOR_MAGNETA);
     render_point(&r->win_game, maze->end, 'E', CELL_COLOR_MAGNETA);
+    Window_commit(&r->win_game);
 }
 
 void Renderer_render_current_point(const Renderer_t *restrict r, Point_t p) {
     render_point(&r->win_game, p, '@', CELL_COLOR_YELLOW);
+    Window_commit(&r->win_game);
+}
+
+void Renderer_clear_log(const Renderer_t *restrict r) {
+    for (int i = 0; i < MAZER_LOGBUFFER_LEN; i++) {
+        Point_t p = {
+            .x = 0,
+            .y = i,
+        };
+        render_text(&r->win_log, p, "", CELL_COLOR_WHITE, MAZER_LOGBUFFER_ENTRY_LEN);
+    }
 }
 
 void Renderer_render_log(const Renderer_t *restrict r, const LogBuffer_t *restrict buf) {
@@ -205,6 +223,7 @@ void Renderer_render_log(const Renderer_t *restrict r, const LogBuffer_t *restri
             ln++;
         }
     }
+    Window_commit(&r->win_log);
 }
 
 void Renderer_render_command(const Renderer_t *restrict r, const char *restrict buf,
@@ -226,13 +245,14 @@ void Renderer_render_command(const Renderer_t *restrict r, const char *restrict 
     wattron(handle, COLOR_PAIR(color));
     mvwprintw(handle, p.y, p.x, "%s", buf);
     wattroff(handle, COLOR_PAIR(color));
+    Window_commit(&r->win_command);
 }
 
 void Renderer_commit_all(const Renderer_t *restrict r) {
-    wrefresh(r->win_game.handle);
-    wrefresh(r->win_log.handle);
-    wrefresh(r->win_command.handle);
-    refresh();
+    Window_commit(&r->win_game);
+    Window_commit(&r->win_log);
+    Window_commit(&r->win_command);
+    wrefresh(stdscr);
 }
 
 void Renderer_destroy(Renderer_t *restrict r) {
