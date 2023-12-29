@@ -5,12 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-int find_path(const maze_t *restrict maze, const step_callback_t step_callback) {
+int find_path(const Maze_t *restrict maze, const step_callback_t step_callback) {
     Stack_t stack;
     Stack_init(&stack, sizeof(Point_t));
 
-    maze_t *maze_ = (maze_t *)malloc(sizeof(maze_t));
-    memcpy(maze_, maze, sizeof(maze_t));
+    Maze_t *maze_ = (Maze_t *)malloc(sizeof(Maze_t));
+    memcpy(maze_, maze, sizeof(Maze_t));
 
     const Point_t end = maze_->end;
     bool solution_found = false;

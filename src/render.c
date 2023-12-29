@@ -110,7 +110,7 @@ int Renderer_init(Renderer_t *restrict r) {
     return 0;
 }
 
-void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict maze) {
+void Renderer_render_maze(const Renderer_t *restrict r, const Maze_t *restrict maze) {
     for (int x = 0; x < MAZER_MAZE_WIDTH; x++) {
         for (int y = 0; y < MAZER_MAZE_HEIGHT; y++) {
             const Point_t p = {
@@ -138,7 +138,7 @@ void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict m
     Window_commit(&r->win_game);
 }
 
-void Renderer_render_maze_highlight(const Renderer_t *restrict r, const maze_t *restrict maze,
+void Renderer_render_maze_highlight(const Renderer_t *restrict r, const Maze_t *restrict maze,
                                     Point_t highlight) {
     for (int x = 0; x < MAZER_MAZE_WIDTH; x++) {
         for (int y = 0; y < MAZER_MAZE_HEIGHT; y++) {

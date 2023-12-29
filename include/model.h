@@ -31,14 +31,14 @@ typedef struct StateReport_ {
     progress_state_t state;
 } StateReport_t;
 
-typedef struct maze_ {
+typedef struct Maze_ {
     cell_type_t map[MAZER_MAZE_WIDTH][MAZER_MAZE_HEIGHT];
     Point_t start;
     Point_t end;
-} maze_t;
+} Maze_t;
 
-typedef void (*step_callback_t)(const maze_t *restrict maze, StateReport_t state);
+typedef void (*step_callback_t)(const Maze_t *restrict maze, StateReport_t state);
 
-int find_path(const maze_t *restrict maze, const step_callback_t step_callback);
+int find_path(const Maze_t *restrict maze, const step_callback_t step_callback);
 
 #endif /* MODEL_H_INCLUDED_ */

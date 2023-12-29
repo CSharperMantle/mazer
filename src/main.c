@@ -9,7 +9,7 @@
 
 #define MAZER_COMMAND_MAX_LEN 40
 
-static maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+static Maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                               {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                               {0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0},
                               {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
@@ -35,7 +35,7 @@ static maze_t maze = {.map = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 static Renderer_t renderer = {0};
 static LogBuffer_t logger = {0};
 
-static void step_callback(const maze_t *restrict maze, StateReport_t state) {
+static void step_callback(const Maze_t *restrict maze, StateReport_t state) {
     char *msg = (char *)calloc(32, sizeof(char));
     const char *fmt = NULL;
     switch (state.state) {

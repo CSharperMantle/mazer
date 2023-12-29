@@ -46,8 +46,8 @@ typedef struct Renderer_ {
 } Renderer_t;
 
 int Renderer_init(Renderer_t *restrict r);
-void Renderer_render_maze(const Renderer_t *restrict r, const maze_t *restrict maze);
-void Renderer_render_maze_highlight(const Renderer_t *restrict r, const maze_t *restrict maze,
+void Renderer_render_maze(const Renderer_t *restrict r, const Maze_t *restrict maze);
+void Renderer_render_maze_highlight(const Renderer_t *restrict r, const Maze_t *restrict maze,
                                     Point_t highlight);
 void Renderer_render_current_point(const Renderer_t *restrict r, Point_t p);
 void Renderer_clear_log(const Renderer_t *restrict r);
